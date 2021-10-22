@@ -6,11 +6,12 @@ class level_load:
         pass
 
     def render_load(level, dir):
+        # define cleared renderlist
         render_list = []
 
+        # load scene into render list
         if level is -1:
-            play_button = [pygame.transform.scale(pygame.image.load(dir + r'\\Assets\\UI\\Play button.png'), (200, 75)), (540, 341)]
-            play_button.append(play_button[0].get_rect())
-            render_list.append(play_button)
-            
+            render_list.append([pygame.transform.scale(pygame.image.load(dir + r'\\Assets\\UI\\Play button.png'), (200, 75)), (540, 341)])
+        
+        # return render list
         return render_list
