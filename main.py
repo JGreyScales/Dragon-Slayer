@@ -8,7 +8,7 @@ pygame.init()
 
 # var define
 # tuple define
-size = width, height = 1280, 960
+size = width, height = 1280, 768
 
 
 # string define
@@ -39,7 +39,6 @@ for level in range(-1, level_total - 1):
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     # checks if player hits play button
                     if event.pos[0] >= 548 and event.pos[0] <= 722 and event.pos[1] >= 348 and event.pos[1] <= 400:
-                        print('hit')
                         load_level_b = False
                         
         # render to screen

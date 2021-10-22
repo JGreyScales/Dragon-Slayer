@@ -10,9 +10,11 @@ echo.
 echo.
 color 1
 pip install pygame
+pip install pathlib
 color 2
 echo.
 echo.
 @echo ======= =============== =============== =============== COMPLETED =============== =============== =============== ======
 echo.
 timeout 5
+
