@@ -3,17 +3,18 @@ import pygame, pathlib, sys, time
 #local imports
 from scripts.level import level_load
 
-
+#todo:
+# add movement
+# add UI
+# add placing
+# add detection
         
 # pygame init
 pygame.init()
 
 # var define
 # tuple define
-size = width, height = 1408, 896
-
-# array assignment
-
+size = width, height = 1478, 896
 
 # string define
 dir = str(pathlib.Path(__file__).parent.resolve())
@@ -24,6 +25,9 @@ level_total = 2
 #function/class define
 screen = pygame.display.set_mode(size)
 clock = pygame.time.Clock()
+
+#fonts
+Run_button = pygame.transform.rotate(pygame.font.SysFont('arial', 68).render('RUN', False, (0, 0, 0)), 90)
 
 # level loop
 for level in range(-1, level_total - 1):
@@ -39,17 +43,18 @@ for level in range(-1, level_total - 1):
         for event in pygame.event.get():
             if event.type == pygame.QUIT: sys.exit()
 
-            if level is -1:
+            if level == -1:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     # checks if player hits play button
-                    if event.pos[0] >= 614 and event.pos[0] <= 790 and event.pos[1] >= 419 and event.pos[1] <= 473:
-                        load_level_b = False
+                    if event.pos[0] >= 614 and event.pos[0] <= 790 and event.pos[1] >= 419 and event.pos[1] <= 473: load_level_b = False
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                    None
 
                         
         # render to screen
-        screen.fill((150,150,150))
-        for object in render_list:
-         screen.blit(object[0], object[1])
+        for object in render_list: screen.blit(object[0], object[1])
+        
+        screen.blit(Run_button, (1405, 55))
 
         # renders grid based system
         if level != -1:
@@ -62,4 +67,3 @@ for level in range(-1, level_total - 1):
 
         # extra render options
         pygame.display.flip()
-        clock.tick(60)
