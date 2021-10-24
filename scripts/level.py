@@ -57,11 +57,11 @@ class level_load:
         return render_list
 
 
-
+    # inner clock
     def cycle_tick(list, *objects):
+        # finds objects in render_list
         for sprite in objects:
             object = list[list.index(sprite) + 1]
-            print(object)
             object[0].get_rect()
         
 
