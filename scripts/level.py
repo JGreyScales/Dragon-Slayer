@@ -1,3 +1,4 @@
+from posixpath import expanduser
 import pygame
 
 
@@ -26,8 +27,13 @@ class level_load:
 
             for object in line:
                 if object == 'p': 
+                    # append background to images that do not have full 128x128 sizes
                     render_list.append([pygame.transform.scale(pygame.image.load(dir + r'\\Assets\\Props\\backgrounds\\clear_background.png'), (128,128)), (column, row)])
+                    
+                    #place a holder in to find the players index
+                    render_list.append('p')
 
+                
                 try: render_list.append([pygame.transform.scale(pygame.image.load(paths.get(object)), (128, 128)), (column, row)])
                 except(TypeError): None
 
@@ -49,3 +55,33 @@ class level_load:
 
         # return render listwhat 
         return render_list
+
+
+
+    def cycle_tick(list, *objects):
+        for sprite in objects:
+            object = list[list.index(sprite) + 1]
+            print(object)
+            object[0].get_rect()
+        
+
+
+
+
+
+
+
+# def break_point():
+#     print('a')
+#     try:
+#         break_point()
+#     except(RecursionError):
+#         break_catch()
+# def break_catch():
+#     try:
+#         breakpoint()
+#     except(RecursionError):
+#         break_catch()
+
+
+# break_point()

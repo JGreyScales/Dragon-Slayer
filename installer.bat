@@ -11,6 +11,7 @@ echo.
 color 1
 pip install pygame
 pip install pathlib
+pip install fnmatch2
 color 2
 echo.
 echo.

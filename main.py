@@ -1,5 +1,5 @@
 #imports
-import pygame, pathlib, sys, time
+import pygame, pathlib, sys, fnmatch, os
 #local imports
 from scripts.level import level_load
 
@@ -9,7 +9,6 @@ from scripts.level import level_load
 # add placing
 # add detection
         
-# pygame init
 pygame.init()
 
 # var define
@@ -19,15 +18,20 @@ size = width, height = 1478, 896
 # string define
 dir = str(pathlib.Path(__file__).parent.resolve())
 
-# int define
-level_total = 2
+# int/float define
+# gathers all levels from levels folder (this allows users to make their own levels and play them)
+level_total = len(fnmatch.filter(os.listdir(dir + r'\\Assets\\levels'), '*dsm'))
+
+
+getTicksLastFrame = 0
+time_pass = 0.0
 
 #function/class define
 screen = pygame.display.set_mode(size)
 clock = pygame.time.Clock()
 
 #fonts
-Run_button = pygame.transform.rotate(pygame.font.SysFont('arial', 68).render('RUN', False, (0, 0, 0)), 90)
+Run_button = pygame.transform.rotate(pygame.font.SysFont('arial', 68).render('RUN', True, (0, 0, 0)), 90)
 
 # level loop
 for level in range(-1, level_total - 1):
@@ -40,6 +44,16 @@ for level in range(-1, level_total - 1):
 
     # game loop
     while load_level_b:
+        t = pygame.time.get_ticks()
+        deltaTime = (t - getTicksLastFrame) /1000.0
+        getTicksLastFrame = t
+        time_pass += deltaTime
+
+        # creates inner gameclock
+        if time_pass >= 0.5 and level != -1:
+            level_load.cycle_tick(render_list, ('p'))
+            time_pass = 0.0
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT: sys.exit()
 
@@ -52,7 +66,10 @@ for level in range(-1, level_total - 1):
 
                         
         # render to screen
-        for object in render_list: screen.blit(object[0], object[1])
+        for object in render_list: 
+            # try and catch to catch place holders
+            try: screen.blit(object[0], object[1])
+            except(TypeError, IndexError): None
         
         screen.blit(Run_button, (1405, 55))
 
