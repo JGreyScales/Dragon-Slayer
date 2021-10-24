@@ -1,8 +1,7 @@
 #imports
 import pygame, pathlib, sys, fnmatch, os
 #local imports
-from scripts.level import level_load
-
+from scripts.render import level_load as ll
 #todo:
 # add movement
 # add UI
@@ -29,6 +28,7 @@ time_pass = 0.0
 #function/class define
 screen = pygame.display.set_mode(size)
 clock = pygame.time.Clock()
+level_load = ll(dir)
 
 #fonts
 Run_button = pygame.transform.rotate(pygame.font.SysFont('arial', 68).render('RUN', True, (0, 0, 0)), 90)
@@ -36,7 +36,8 @@ Run_button = pygame.transform.rotate(pygame.font.SysFont('arial', 68).render('RU
 # level loop
 for level in range(-1, level_total - 1):
     # clear render_list and load current level
-    render_list = level_load.render_load(level, dir)
+    render_list, temp_file = level_load.render_load(level, dir)
+    print(temp_file)
 
     # loop start definement
     load_level_b = True
@@ -49,10 +50,7 @@ for level in range(-1, level_total - 1):
         getTicksLastFrame = t
         time_pass += deltaTime
 
-        # creates inner gameclock
-        if time_pass >= 0.5 and level != -1:
-            level_load.cycle_tick(render_list, ('p'))
-            time_pass = 0.0
+
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT: sys.exit()
@@ -64,21 +62,27 @@ for level in range(-1, level_total - 1):
             elif event.type == pygame.MOUSEBUTTONDOWN:
                     None
 
-                        
-        # render to screen
-        for object in render_list: 
-            # try and catch to catch place holders
-            try: screen.blit(object[0], object[1])
-            except(TypeError, IndexError): None
-        
-        screen.blit(Run_button, (1405, 55))
+        # creates inner gameclock
+        if time_pass >= 0.5 and level != -1:
+            movement, temp_file = level_load.cycle_tick(render_list, temp_file, ('p'))
+            print(movement, temp_file)
+            time_pass = 0.0
+        # render options
+        else:              
+            # render to screen
+            for object in render_list: 
+                # try and catch to catch place holders
+                try: screen.blit(object[0], object[1])
+                except(TypeError, IndexError): None
+            if level != -1:
+                for column in range(128, 1408, 128):
+                    pygame.draw.line(screen, (0,0,0), (column, 0), (column, 896), 1)
+                for row in range(128, 896, 128):
+                    pygame.draw.line(screen, (0,0,0), (0, row), (1408, row), 1)
+                screen.blit(Run_button, (1405, 55))
 
         # renders grid based system
-        if level != -1:
-            for column in range(128, 1408, 128):
-                pygame.draw.line(screen, (0,0,0), (column, 0), (column, 896), 1)
-            for row in range(128, 896, 128):
-                pygame.draw.line(screen, (0,0,0), (0, row), (1408, row), 1)
+
 
 
 
