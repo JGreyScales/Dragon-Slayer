@@ -3,10 +3,11 @@ from posixpath import expanduser
 from typing import List
 import pygame
 
-
+# to do, add rotation to player
+# to do, add movement
 class level_load:
     def __init__(self, dir) -> None:
-        f = open(dir + r'\\Assets\\TEMP.dsm', 'w+')
+        None
 
     def render_load(self, level, dir, *screen) -> list:
         
@@ -60,16 +61,36 @@ class level_load:
 
 
     # inner clock
-    def cycle_tick(self, list, map, *objects) -> List:
+    def cycle_tick(self, list, map, *objects) -> tuple:
+        move = ()
         for line in range(len(map)):
             try: 
                 row, column = line, map[line].index('p')
                 break
             except(ValueError): None
-        else:
-            print('PLAYER NOT FOUND, PLEASE FIX LEVEL (USE \'p\' IN LEVEL TO FIX). IF YOU HAVE NOT CREATED OR EDITED THE FILE. PLEASE REDOWNLOAD OR SELF REPAIR')
+        else: print('PLAYER NOT FOUND, PLEASE FIX LEVEL (USE \'p\' IN LEVEL TO FIX). IF YOU HAVE NOT CREATED OR EDITED THE FILE. PLEASE REDOWNLOAD OR SELF REPAIR')
 
-        move = None
+
+            # if players next move is not a background wall
+        if map[row][column + 1] != '-':
+            print('Nonemoveable') #rotate player 90 to the right and move in said direction
+        else:   
+            null = []
+            next = False
+            for i in map[row]:
+                if i == 'p':
+                    null.append('-')
+                    next = True
+                elif next:
+                    null.append('p')
+                    next = False
+                else:
+                    null.append(i)
+            if null[len(null) - 1] == '\n':
+                null = null[:len(null) - 1]
+            map[row] = null[:]
+
+        
         return[move, map]
 
 

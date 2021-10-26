@@ -2,9 +2,9 @@
 import pygame, pathlib, sys, fnmatch, os
 #local imports
 from scripts.render import level_load as ll
+
 #todo:
 # add movement
-# add UI
 # add placing
 # add detection
         
@@ -37,7 +37,6 @@ Run_button = pygame.transform.rotate(pygame.font.SysFont('arial', 68).render('RU
 for level in range(-1, level_total - 1):
     # clear render_list and load current level
     render_list, temp_file = level_load.render_load(level, dir)
-    print(temp_file)
 
     # loop start definement
     load_level_b = True
@@ -65,7 +64,7 @@ for level in range(-1, level_total - 1):
         # creates inner gameclock
         if time_pass >= 0.5 and level != -1:
             movement, temp_file = level_load.cycle_tick(render_list, temp_file, ('p'))
-            print(movement, temp_file)
+
             time_pass = 0.0
         # render options
         else:              
