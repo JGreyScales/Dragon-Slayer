@@ -64,7 +64,8 @@ class level_load:
 
 
     # inner clock
-    def cycle_tick(self, map, objects) -> tuple:
+    def cycle_tick(self, map, movement, objects) -> tuple:
+        # 0 right, 1 left, 2 down, 3 up
         for item in objects:
             for line in range(len(map)):
                 try: 
@@ -78,10 +79,14 @@ class level_load:
             if map[row][column+ 1] != '-':
                 print('Nonemoveable') #rotate player 90 to the right and move in said direction
             else:   
+
+                # create temp of map
                 temp = map[row]
                 map[row] = ''
                 next = False
+
                 for i in temp:
+                    # if is the object we are searching for, move it forwards one. if not 
                     if i == item:
                         map[row] += '-'
                         next = True

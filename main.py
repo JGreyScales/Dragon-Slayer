@@ -68,7 +68,7 @@ for level in range(-1, level_total - 1):
         # creates inner gameclock   
         if time_pass >= 1.5 and level != -1:
             time_pass = 0.0
-            temp_file, column, row, objects = level_load.cycle_tick(temp_file, ['p'])
+            temp_file, column, row, objects = level_load.cycle_tick(temp_file, 0, ['p'])
             if not False:
                 try:
                     render_list[render_list.index(None)] = render_list[render_list.index(None) + 1][0].get_rect()
@@ -78,7 +78,6 @@ for level in range(-1, level_total - 1):
             render_list[render_list.index('p')+ 1][0], render_list[render_list.index('p')+ 1][1] = column * 128 , row * 128
             screen.blit(render_list[render_list.index('p') + 2][0], render_list[render_list.index('p') + 1])
 
-            #render_list[render_list.index('p') + 1][0] = render_list[render_list.index('p') + 1][0].move(movement)
         # render options
         else:            
             next = 0
@@ -100,7 +99,6 @@ for level in range(-1, level_total - 1):
                     pygame.draw.line(screen, (0,0,0), (0, row), (1408, row), 1)
                 screen.blit(Run_button, (1405, 55))
 
-            #render_list, temp_file = level_load.render_load(level, temp_file)
 
 
         # extra render options
