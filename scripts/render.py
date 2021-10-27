@@ -1,5 +1,6 @@
 from os import write
 from posixpath import expanduser
+from sys import meta_path
 from typing import List
 import pygame
 
@@ -9,19 +10,23 @@ class level_load:
     def __init__(self, dir) -> None:
         None
 
-    def render_load(self, level, dir, *screen) -> list:
+    def render_load(self, level, dir, start, temp) -> list:
+
         
         paths = {
-            '-' : str(dir + r'\\Assets\\Props\\backgrounds\\clear_background.png'),
-            'x': str(dir + r'\\Assets\\Props\\walls\\wall[1].png'),
-            'p' : str(dir + r'\\Assets\\Characters\\knight.png')
+            '-' : str(dir + r'//Assets//Props//backgrounds//clear_background.png'),
+            'x': str(dir + r'//Assets//Props//walls//wall[1].png'),
+            'p' : str(dir + r'//Assets//Characters//knight.png')
         }
         # define cleared renderlist
         render_list = []
 
         # reads from hexmap
-        lines = open(dir + r'\\Assets\\levels\\'+ str(level) + r'.dsm','r').readlines()
-        temp =  []
+        if start:
+            lines = open(dir + r'//Assets//levels//'+ str(level) + r'.dsm','r').readlines()
+        else:
+            lines = temp
+
 
         #temp.seek(0)
        # temp.truncate()
@@ -30,15 +35,18 @@ class level_load:
         row = 0
         for line in lines:
             column = 0
-            temp.append(line)
+            if start:
+                temp.append(line)
             for object in line:
+                print(line)
                 if object == 'p': 
                     # append background to images that do not have full 128x128 sizes
-                    render_list.append([pygame.transform.scale(pygame.image.load(dir + r'\\Assets\\Props\\backgrounds\\clear_background.png'), (128,128)), (column, row)])
+                    render_list.append([pygame.transform.scale(pygame.image.load(dir + r'//Assets//Props//backgrounds//clear_background.png'), (128,128)), (column, row)])
+
                     
                     #place a holder in to find the players index
                     render_list.append('p')
-
+                    render_list.append(None)
                 
                 try: render_list.append([pygame.transform.scale(pygame.image.load(paths.get(object)), (128, 128)), (column, row)])
                 except(TypeError): None
@@ -48,21 +56,21 @@ class level_load:
 
         # load scene into render list
         if level == -1:
-            render_list.append([pygame.transform.scale(pygame.image.load(dir + r'\\Assets\\UI\\Play button.png'), (200, 75)), (604, 410.5)])
-            render_list.append([pygame.transform.scale(pygame.image.load(dir + r'\\Assets\\UI\\Title.png'), (750, 100)), (329 , 174)])
+            render_list.append([pygame.transform.scale(pygame.image.load(dir + r'//Assets//UI//Play button.png'), (200, 75)), (604, 410.5)])
+            render_list.append([pygame.transform.scale(pygame.image.load(dir + r'//Assets//UI//Title.png'), (750, 100)), (329 , 174)])
         else:
             # player UI (right side)
-            render_list.append([pygame.transform.scale(pygame.image.load(dir + r'\\Assets\\UI\\text.png'), (70,896)), (1408, 0)])
-            render_list.append([pygame.transform.scale(pygame.image.load(dir + r'\\Assets\\UI\\text.png'), (68, 200)), (1409, 28)])
+            for item in [[70,896, 1408, 0], [68, 200, 1409, 28]]:
+                render_list.append([pygame.transform.scale(pygame.image.load(dir + r'//Assets//UI//text.png'), (item[0],item[1])), (item[2], item[3])])
 
-
+        if temp[len(temp) - 1] == '\n': temp = temp[:len(temp) - 1]
         # return render listwhat 
         return [render_list, temp]
 
 
     # inner clock
-    def cycle_tick(self, list, map, *objects) -> tuple:
-        move = ()
+    def cycle_tick(self, map, *objects) -> tuple:
+        move = []
         for line in range(len(map)):
             try: 
                 row, column = line, map[line].index('p')
@@ -72,7 +80,7 @@ class level_load:
 
 
             # if players next move is not a background wall
-        if map[row][column + 1] != '-':
+        if map[row][column+ 1] != '-':
             print('Nonemoveable') #rotate player 90 to the right and move in said direction
         else:   
             null = []
@@ -86,12 +94,14 @@ class level_load:
                     next = False
                 else:
                     null.append(i)
-            if null[len(null) - 1] == '\n':
-                null = null[:len(null) - 1]
-            map[row] = null[:]
+            if null[len(null) - 1] == '\n': null = null[:len(null) - 1]
 
-        
-        return[move, map]
+            map[row] = ''
+            for item in null:
+                map[row] += item
+            print(map)
+
+        return[map, column, row]
 
 
 
@@ -112,3 +122,5 @@ class level_load:
 
 
 # break_point()
+
+# TO FIND WHERE PLAYER CLICKS. TAKE THE FLOOR DIVSION OF PLAYER POS (X,Y) / (128,128)
