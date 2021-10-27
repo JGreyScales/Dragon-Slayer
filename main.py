@@ -66,9 +66,9 @@ for level in range(-1, level_total - 1):
 
 
         # creates inner gameclock   
-        if time_pass >= 2 and level != -1:
+        if time_pass >= 1.5 and level != -1:
             time_pass = 0.0
-            temp_file, column, row = level_load.cycle_tick(temp_file, ('p'))
+            temp_file, column, row, objects = level_load.cycle_tick(temp_file, ['p'])
             if not False:
                 try:
                     render_list[render_list.index(None)] = render_list[render_list.index(None) + 1][0].get_rect()
