@@ -64,8 +64,9 @@ class level_load:
 
 
     # inner clock
-    def cycle_tick(self, map, movement, objects) -> tuple:
-        # 0 right, 1 left, 2 down, 3 up
+    def cycle_tick(self, map, direction, objects) -> tuple:
+        # 1 right, -1 left,      -1.0 down, 1.0 up
+
         for item in objects:
             for line in range(len(map)):
                 try: 
@@ -75,26 +76,30 @@ class level_load:
             else: print('PLAYER NOT FOUND, PLEASE FIX LEVEL (USE \'p\' IN LEVEL TO FIX). IF YOU HAVE NOT CREATED OR EDITED THE FILE. PLEASE REDOWNLOAD OR SELF REPAIR')
 
 
+            if type(direction) == int:
+                if map[row][column + direction] != '-':
+                    print('Nonemoveable') #rotate player 90 to the right and move in said direction
+                else:   
+
+                    # create temp of map
+                    temp, map[row], next = map[row], '', False
+                    if direction < 0: temp = temp[::-1]
+                    for i in temp:
+                        # if is the object we are searching for, move it forwards one. if not do not also mamove
+                        if i == item:
+                            map[row] += '-'
+                            next = True
+                        elif next:
+                            map[row] += item
+                            next = False
+                            
+                        else: map[row] += i
+                    if direction < 0: map[row] = map[row][::-1]
+            elif type(direction) == float:
+                print('float')
                 # if players next move is not a background wall
-            if map[row][column+ 1] != '-':
-                print('Nonemoveable') #rotate player 90 to the right and move in said direction
-            else:   
 
-                # create temp of map
-                temp = map[row]
-                map[row] = ''
-                next = False
 
-                for i in temp:
-                    # if is the object we are searching for, move it forwards one. if not 
-                    if i == item:
-                        map[row] += '-'
-                        next = True
-                    elif next:
-                        map[row] += item
-                        next = False
-                    else:
-                        map[row] += i
         return[map, column, row, objects]
 
 
