@@ -79,6 +79,8 @@ class level_load:
             if type(direction) == int:
                 if map[row][column + direction] != '-':
                     print('Nonemoveable') #rotate player 90 to the right and move in said direction
+                    direction = float(direction + (2 * (direct)))
+                    print(direction)
                 else:   
 
                     # create temp of map
@@ -100,7 +102,7 @@ class level_load:
                 # if players next move is not a background wall
 
 
-        return[map, column, row, objects]
+        return[map, column, direction, row, objects]
 
 
 

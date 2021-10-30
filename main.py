@@ -21,7 +21,7 @@ dir = str(pathlib.Path(__file__).parent.resolve())
 # int/float define
 # gathers all levels from levels folder (this allows users to make their own levels and play them)
 level_total = len(fnmatch.filter(os.listdir(dir + r'//Assets//levels'), '*dsm'))
-
+direction = 1
 
 getTicksLastFrame = 0
 time_pass = 0.0
@@ -68,7 +68,7 @@ for level in range(-1, level_total - 1):
         # creates inner gameclock   
         if time_pass >= 1.5 and level != -1:
             time_pass = 0.0
-            temp_file, column, row, objects = level_load.cycle_tick(temp_file, 1, ['p'])
+            temp_file, column, direction, row, objects = level_load.cycle_tick(temp_file, direction, ['p'])
             if not False:
                 try:
                     render_list[render_list.index(None)] = render_list[render_list.index(None) + 1][0].get_rect()
