@@ -69,11 +69,9 @@ for level in range(-1, level_total - 1):
         if time_pass >= 1.5 and level != -1:
             time_pass = 0.0
             temp_file, column, direction, row, objects = level_load.cycle_tick(temp_file, direction, ['p'])
-            if not False:
-                try:
-                    render_list[render_list.index(None)] = render_list[render_list.index(None) + 1][0].get_rect()
-                    stop = True
-                except(ValueError): None
+            try:
+                render_list[render_list.index(None)] = render_list[render_list.index(None) + 1][0].get_rect()
+            except(ValueError): None
 
             render_list[render_list.index('p')+ 1][0], render_list[render_list.index('p')+ 1][1] = column * 128 , row * 128
             screen.blit(render_list[render_list.index('p') + 2][0], render_list[render_list.index('p') + 1])
