@@ -12,6 +12,8 @@ from scripts.render import level_load as ll
 pygame.init()
 
 # var define
+
+
 # tuple define
 size = width, height = 1478, 896
 
@@ -21,7 +23,7 @@ dir = str(pathlib.Path(__file__).parent.resolve())
 # int/float define
 # gathers all levels from levels folder (this allows users to make their own levels and play them)
 level_total = len(fnmatch.filter(os.listdir(dir + r'//Assets//levels'), '*dsm'))
-direction = 1
+direction = -1.0
 
 getTicksLastFrame = 0
 time_pass = 0.0
@@ -42,11 +44,12 @@ for level in range(-1, level_total - 1):
     # loop start definement
     load_level_b = True
     print('load level ' + str(level))
-    start = True
+    start, run = True, False
     temp_file = []
     # game loop
     while load_level_b:
         render_list, temp_file = level_load.render_load(level, dir, start, temp_file)
+
         if start:
             start = False
         t = pygame.time.get_ticks()
@@ -59,21 +62,26 @@ for level in range(-1, level_total - 1):
 
             if level == -1:
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    # checks if player hits play button
+                     #checks if player hits play button
                     if event.pos[0] >= 614 and event.pos[0] <= 790 and event.pos[1] >= 419 and event.pos[1] <= 473: load_level_b = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                    None
+                    try:
+                        print(render_list[render_list.index('run') + 2])
+                        print(render_list[render_list.index('run') + 2][0].get_rect().collidepoint(pygame.mouse.get_pos()))
+                        if render_list[render_list.index('run') + 2][0].get_rect().collidepoint(pygame.mouse.get_pos()):
+                            run = True
+                            print(run)
+                    except(ValueError): None
 
 
         # creates inner gameclock   
-        if time_pass >= 1.5 and level != -1:
+        if time_pass >= .5 and level != -1:
             time_pass = 0.0
             temp_file, column, direction, row, objects = level_load.cycle_tick(temp_file, direction, ['p'])
-            if not False:
-                try:
-                    render_list[render_list.index(None)] = render_list[render_list.index(None) + 1][0].get_rect()
-                    stop = True
-                except(ValueError): None
+            
+            try:
+                render_list[render_list.index(None)] = render_list[render_list.index(None) + 1][0].get_rect()
+            except(ValueError): None
 
             render_list[render_list.index('p')+ 1][0], render_list[render_list.index('p')+ 1][1] = column * 128 , row * 128
             screen.blit(render_list[render_list.index('p') + 2][0], render_list[render_list.index('p') + 1])
