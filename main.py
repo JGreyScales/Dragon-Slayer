@@ -23,7 +23,7 @@ dir = str(pathlib.Path(__file__).parent.resolve())
 # int/float define
 # gathers all levels from levels folder (this allows users to make their own levels and play them)
 level_total = len(fnmatch.filter(os.listdir(dir + r'//Assets//levels'), '*dsm'))
-direction = -1.0
+direction = 1
 
 getTicksLastFrame = 0
 time_pass = 0.0
