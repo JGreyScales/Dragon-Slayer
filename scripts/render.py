@@ -4,35 +4,29 @@ import pygame
 # to do, add movement
 class level_load:
     def __init__(self, dir) -> None:
-        None
-
-    def render_load(self, level, dir, start, temp) -> list:
-
-        
-        paths = {
+        self.moveable = ['-', 'f']
+        self.paths = {
+            'f' : str(dir + r'//Assets//Props//backgrounds//clear_background.png'),
             '-' : str(dir + r'//Assets//Props//backgrounds//clear_background.png'),
             'x': str(dir + r'//Assets//Props//walls//wall[1].png'),
             'p' : str(dir + r'//Assets//Characters//knight.png')
         }
+
+    def render_load(self, level, dir, start, temp) -> list:
+
+        
         # define cleared renderlist
         render_list = []
 
         # reads from hexmap
-        if start:
-            lines = open(dir + r'//Assets//levels//'+ str(level) + r'.dsm','r').readlines()
-        else:
-            lines = temp
-
-
-        #temp.seek(0)
-       # temp.truncate()
+        if start: lines = open(dir + r'//Assets//levels//'+ str(level) + r'.dsm','r').readlines()
+        else: lines = temp
 
         # converts hexmap to images / image cords
         row = 0
         for line in lines:
             column = 0
-            if start:
-                temp.append(line)
+            if start: temp.append(line)
             for object in line:
                 if object == 'p': 
                     # append background to images that do not have full 128x128 sizes
@@ -43,7 +37,7 @@ class level_load:
                     render_list.append('p')
                     render_list.append(None)
                 
-                try: render_list.append([pygame.transform.scale(pygame.image.load(paths.get(object)), (128, 128)), (column, row)])
+                try: render_list.append([pygame.transform.scale(pygame.image.load(self.paths.get(object)), (128, 128)), (column, row)])
                 except(TypeError): None
 
                 column += 128
@@ -54,8 +48,8 @@ class level_load:
             render_list.append([pygame.transform.scale(pygame.image.load(dir + r'//Assets//UI//Play button.png'), (200, 75)), (604, 410.5)])
             render_list.append([pygame.transform.scale(pygame.image.load(dir + r'//Assets//UI//Title.png'), (750, 100)), (329 , 174)])
         else:
-            # player UI (right side)
-            for item in [[70,896, 1408, 0], [68, 200, 1409, 28]]:
+            render_list.append('run')
+            for item in [[70,896, 1408, 0], [68, 200, 1409, 28]]: 
                 render_list.append([pygame.transform.scale(pygame.image.load(dir + r'//Assets//UI//text.png'), (item[0],item[1])), (item[2], item[3])])
 
         if temp[len(temp) - 1] == '\n': temp = temp[:len(temp) - 1]
@@ -64,7 +58,7 @@ class level_load:
 
 
     # inner clock
-    def cycle_tick(self, map, direction, objects) -> tuple:
+    def cycle_tick(self, map, direction, objects) -> list:
         # 1 right, -1 left,      -1.0 down, 1.0 up
 
         for item in objects:
@@ -77,12 +71,9 @@ class level_load:
 
 
             if type(direction) == int:
-                if map[row][column + direction] != '-':
-                    print('Nonemoveable') #rotate player 90 to the right and move in said direction
-                    direction = float(direction + (2 * (direct)))
-                    print(direction)
+                if map[row][column + direction] not in self.moveable:
+                    return level_load.cycle_tick(self, map, float(direction - (2 * direction)), objects)
                 else:   
-
                     # create temp of map
                     temp, map[row], next = map[row], '', False
                     if direction < 0: temp = temp[::-1]
@@ -96,30 +87,37 @@ class level_load:
                             next = False
                             
                         else: map[row] += i
+                    #reverses render order if the player is moving left
                     if direction < 0: map[row] = map[row][::-1]
+                    
             elif type(direction) == float:
-                print('float')
-                # if players next move is not a background wall
+                direction = int(direction - (direction * 2))
+                if map[row + direction][column] not in self.moveable: 
+                    return level_load.cycle_tick(self, map, int(direction - (direction * 2)), objects)
+                else:
+
+                    if direction < 0:
+                        start = line + direction
+                        end = line + 1
+                    else: 
+                        start = line
+                        end = line + (direction * 2)
+                    temp = map[:start]
+                    for line in map[start:end]:
+                        updated_line = ''
+                        for object in range(len(line)):
+                            if object == column:
+                                if line[object] == 'p': updated_line += '-'
+                                else: updated_line += 'p'
+                            else: updated_line += line[object]
+                        temp.append(updated_line)
+
+                    for line in map[end:]: temp.append(line)
+                    map = temp[:]
+                    direction = float(direction - (direction * 2))
+
+                            
+
 
 
         return[map, column, direction, row, objects]
-
-
-
-
-# def break_point():
-#     print('a')**
-#     try:
-#         break_point()
-#     except(RecursionError):
-#         break_catch()
-# def break_catch():
-#     try:
-#         breakpoint()
-#     except(RecursionError):
-#         break_catch()
-
-
-# break_point()
-
-# TO FIND WHERE PLAYER CLICKS. TAKE THE FLOOR DIVSION OF PLAYER POS (X,Y) / (128,128)
