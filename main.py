@@ -14,6 +14,7 @@ pygame.init()
 # var define
 
 
+
 # tuple define
 size = width, height = 1478, 896
 
@@ -50,8 +51,7 @@ for level in range(-1, level_total - 1):
     while load_level_b:
         render_list, temp_file = level_load.render_load(level, dir, start, temp_file)
 
-        if start:
-            start = False
+        if start: start = False
         t = pygame.time.get_ticks()
         deltaTime = (t - getTicksLastFrame) /1000.0
         getTicksLastFrame = t
@@ -66,21 +66,17 @@ for level in range(-1, level_total - 1):
                     if event.pos[0] >= 614 and event.pos[0] <= 790 and event.pos[1] >= 419 and event.pos[1] <= 473: load_level_b = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
                     try:
-                        print(render_list[render_list.index('run') + 2])
-                        print(render_list[render_list.index('run') + 2][0].get_rect().collidepoint(pygame.mouse.get_pos()))
-                        if render_list[render_list.index('run') + 2][0].get_rect().collidepoint(pygame.mouse.get_pos()):
-                            run = True
-                            print(run)
+                        if not run:
+                            if event.pos[0] >= 1409 and event.pos[1] >= 33 and event.pos[0] <= 1475 and event.pos[1] <= 220: run = True
                     except(ValueError): None
 
 
         # creates inner gameclock   
         if time_pass >= .5 and level != -1:
             time_pass = 0.0
-            temp_file, column, direction, row, objects = level_load.cycle_tick(temp_file, direction, ['p'])
+            temp_file, column, direction, row, objects = level_load.cycle_tick(temp_file, direction, ['p'], run)
             
-            try:
-                render_list[render_list.index(None)] = render_list[render_list.index(None) + 1][0].get_rect()
+            try: render_list[render_list.index(None)] = render_list[render_list.index(None) + 1][0].get_rect()
             except(ValueError): None
 
             render_list[render_list.index('p')+ 1][0], render_list[render_list.index('p')+ 1][1] = column * 128 , row * 128
@@ -101,10 +97,8 @@ for level in range(-1, level_total - 1):
 
             # renders grids
             if level != -1:
-                for column in range(128, 1408, 128):
-                    pygame.draw.line(screen, (0,0,0), (column, 0), (column, 896), 1)
-                for row in range(128, 896, 128):
-                    pygame.draw.line(screen, (0,0,0), (0, row), (1408, row), 1)
+                for column in range(128, 1408, 128): pygame.draw.line(screen, (0,0,0), (column, 0), (column, 896), 1)
+                for row in range(128, 896, 128): pygame.draw.line(screen, (0,0,0), (0, row), (1408, row), 1)
                 screen.blit(Run_button, (1405, 55))
 
 

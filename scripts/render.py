@@ -58,9 +58,8 @@ class level_load:
 
 
     # inner clock
-    def cycle_tick(self, map, direction, objects) -> list:
+    def cycle_tick(self, map, direction, objects, run) -> list:
         # 1 right, -1 left,      -1.0 down, 1.0 up
-
         for item in objects:
             for line in range(len(map)):
                 try: 
@@ -70,54 +69,51 @@ class level_load:
             else: print('PLAYER NOT FOUND, PLEASE FIX LEVEL (USE \'p\' IN LEVEL TO FIX). IF YOU HAVE NOT CREATED OR EDITED THE FILE. PLEASE REDOWNLOAD OR SELF REPAIR')
 
 
-            if type(direction) == int:
-                if map[row][column + direction] not in self.moveable:
-                    return level_load.cycle_tick(self, map, float(direction - (2 * direction)), objects)
-                else:   
-                    # create temp of map
-                    temp, map[row], next = map[row], '', False
-                    if direction < 0: temp = temp[::-1]
-                    for i in temp:
-                        # if is the object we are searching for, move it forwards one. if not do not also mamove
-                        if i == item:
-                            map[row] += '-'
-                            next = True
-                        elif next:
-                            map[row] += item
-                            next = False
-                            
-                        else: map[row] += i
-                    #reverses render order if the player is moving left
-                    if direction < 0: map[row] = map[row][::-1]
-                    
-            elif type(direction) == float:
-                direction = int(direction - (direction * 2))
-                if map[row + direction][column] not in self.moveable: 
-                    return level_load.cycle_tick(self, map, int(direction - (direction * 2)), objects)
-                else:
+            if run:
+                if type(direction) == int:
+                    if map[row][column + direction] not in self.moveable:
+                        return level_load.cycle_tick(self, map, float(direction - (2 * direction)), objects, run)
+                    else:   
+                        # create temp of map
+                        temp, map[row], next = map[row], '', False
+                        if direction < 0: temp = temp[::-1]
+                        for i in temp:
+                            # if is the object we are searching for, move it forwards one. if not do not also mamove
+                            if i == item:
+                                map[row] += '-'
+                                next = True
+                            elif next:
+                                map[row] += item
+                                next = False
+                                
+                            else: map[row] += i
+                        #reverses render order if the player is moving left
+                        if direction < 0: map[row] = map[row][::-1]
+                        
+                elif type(direction) == float:
+                    direction = int(direction - (direction * 2))
+                    if map[row + direction][column] not in self.moveable: 
+                        return level_load.cycle_tick(self, map, int(direction - (direction * 2)), objects, run)
+                    else:
 
-                    if direction < 0:
-                        start = line + direction
-                        end = line + 1
-                    else: 
-                        start = line
-                        end = line + (direction * 2)
-                    temp = map[:start]
-                    for line in map[start:end]:
-                        updated_line = ''
-                        for object in range(len(line)):
-                            if object == column:
-                                if line[object] == 'p': updated_line += '-'
-                                else: updated_line += 'p'
-                            else: updated_line += line[object]
-                        temp.append(updated_line)
+                        if direction < 0:
+                            start = line + direction
+                            end = line + 1
+                        else: 
+                            start = line
+                            end = line + (direction * 2)
+                        temp = map[:start]
+                        for line in map[start:end]:
+                            updated_line = ''
+                            for object in range(len(line)):
+                                if object == column:
+                                    if line[object] == 'p': updated_line += '-'
+                                    else: updated_line += 'p'
+                                else: updated_line += line[object]
+                            temp.append(updated_line)
 
-                    for line in map[end:]: temp.append(line)
-                    map = temp[:]
-                    direction = float(direction - (direction * 2))
-
-                            
-
-
-
+                        for line in map[end:]: temp.append(line)
+                        map = temp[:]
+                        direction = float(direction - (direction * 2))
+                       
         return[map, column, direction, row, objects]
