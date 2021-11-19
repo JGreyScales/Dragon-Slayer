@@ -58,7 +58,7 @@ class level_load:
 
 
     # inner clock
-    def cycle_tick(self, map, direction, objects, run) -> list:
+    def cycle_tick(self, map, direction, objects, run, win) -> list:
         # 1 right, -1 left,      -1.0 down, 1.0 up
         for item in objects:
             for line in range(len(map)):
@@ -68,12 +68,15 @@ class level_load:
                 except(ValueError): None
             else: print('PLAYER NOT FOUND, PLEASE FIX LEVEL (USE \'p\' IN LEVEL TO FIX). IF YOU HAVE NOT CREATED OR EDITED THE FILE. PLEASE REDOWNLOAD OR SELF REPAIR')
 
+            if win: return [map, column, direction, row, objects, 2]
 
-            if run:
+            elif run:
                 if type(direction) == int:
                     if map[row][column + direction] not in self.moveable:
-                        return level_load.cycle_tick(self, map, float(direction - (2 * direction)), objects, run)
+                        return level_load.cycle_tick(self, map, float(direction - (2 * direction)), objects, run, win)
                     else:   
+                        if map[row][column + direction] == 'f':
+                            win = True
                         # create temp of map
                         temp, map[row], next = map[row], '', False
                         if direction < 0: temp = temp[::-1]
@@ -93,8 +96,10 @@ class level_load:
                 elif type(direction) == float:
                     direction = int(direction - (direction * 2))
                     if map[row + direction][column] not in self.moveable: 
-                        return level_load.cycle_tick(self, map, int(direction - (direction * 2)), objects, run)
+                        return level_load.cycle_tick(self, map, int(direction - (direction * 2)), objects, run, win)
                     else:
+                        if map[row + direction][column] == 'f':
+                            win = True
 
                         if direction < 0:
                             start = line + direction
@@ -116,4 +121,4 @@ class level_load:
                         map = temp[:]
                         direction = float(direction - (direction * 2))
                        
-        return[map, column, direction, row, objects]
+        return[map, column, direction, row, objects, win]

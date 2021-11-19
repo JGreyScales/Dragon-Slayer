@@ -37,7 +37,7 @@ level_load = ll(dir)
 #fonts
 Run_button = pygame.transform.rotate(pygame.font.SysFont('arial', 68).render('RUN', True, (0, 0, 0)), 90)
 
-# level loop
+# level loop/
 for level in range(-1, level_total - 1):
     # clear render_list and load current level
     
@@ -45,7 +45,7 @@ for level in range(-1, level_total - 1):
     # loop start definement
     load_level_b = True
     print('load level ' + str(level))
-    start, run = True, False
+    start, run, win = True, False, False
     temp_file = []
     # game loop
     while load_level_b:
@@ -74,8 +74,10 @@ for level in range(-1, level_total - 1):
         # creates inner gameclock   
         if time_pass >= .5 and level != -1:
             time_pass = 0.0
-            temp_file, column, direction, row, objects = level_load.cycle_tick(temp_file, direction, ['p'], run)
-            
+            temp_file, column, direction, row, objects, win = level_load.cycle_tick(temp_file, direction, ['p'], run, win)
+            if win == 2:
+                load_level_b = False
+                
             try: render_list[render_list.index(None)] = render_list[render_list.index(None) + 1][0].get_rect()
             except(ValueError): None
 
