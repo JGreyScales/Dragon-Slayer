@@ -13,8 +13,6 @@ pygame.init()
 
 # var define
 
-
-
 # tuple define
 size = width, height = 1478, 896
 
@@ -39,6 +37,8 @@ Run_button = pygame.transform.rotate(pygame.font.SysFont('arial', 68).render('RU
 
 # level loop/
 for level in range(-1, level_total - 1):
+
+    
     # clear render_list and load current level
     
 
@@ -62,7 +62,7 @@ for level in range(-1, level_total - 1):
 
             if level == -1:
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                     #checks if player hits play button
+                    #checks if player hits play button
                     if event.pos[0] >= 614 and event.pos[0] <= 790 and event.pos[1] >= 419 and event.pos[1] <= 473: load_level_b = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
                     try:
@@ -76,7 +76,10 @@ for level in range(-1, level_total - 1):
             time_pass = 0.0
             temp_file, column, direction, row, objects, win = level_load.cycle_tick(temp_file, direction, ['p'], run, win)
             if win == 2:
-                load_level_b = False
+                print('failure')
+                render_list, temp_file = level_load.render_load(level, dir, True, [])
+                win, run, direction = False, False, 1
+
                 
             try: render_list[render_list.index(None)] = render_list[render_list.index(None) + 1][0].get_rect()
             except(ValueError): None
