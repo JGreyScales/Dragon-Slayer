@@ -9,7 +9,8 @@ class level_load:
             'f' : str(dir + r'//Assets//Props//backgrounds//clear_background.png'),
             '-' : str(dir + r'//Assets//Props//backgrounds//clear_background.png'),
             'x': str(dir + r'//Assets//Props//walls//wall[1].png'),
-            'p' : str(dir + r'//Assets//Characters//knight.png')
+            'p' : str(dir + r'//Assets//Characters//knight.png'),
+            's' : str(dir + r'//Assets//Traps//spikes.png')
         }
 
     def render_load(self, level, dir, start, temp) -> list:
@@ -43,17 +44,27 @@ class level_load:
                 column += 128
             row += 128
 
-        # load scene into render list
+        # render UI elements
         if level == -1:
             render_list.append([pygame.transform.scale(pygame.image.load(dir + r'//Assets//UI//Play button.png'), (200, 75)), (604, 410.5)])
             render_list.append([pygame.transform.scale(pygame.image.load(dir + r'//Assets//UI//Title.png'), (750, 100)), (329 , 174)])
         else:
             render_list.append('run')
-            for item in [[70,896, 1408, 0], [68, 200, 1409, 28]]: 
+            
+            for item in [[70,896, 1408, 0], [68, 200, 1409, 28], [68, 200, 1409, 228]]: 
                 render_list.append([pygame.transform.scale(pygame.image.load(dir + r'//Assets//UI//text.png'), (item[0],item[1])), (item[2], item[3])])
 
+
+            # store useable traps in the level
+            # y pos += 200, start at 28. for UI border
+            useable = ('s')
+            #render useable traps to UI elements
+            render_list.append([pygame.transform.rotate(pygame.transform.scale(pygame.image.load(self.paths['s']), (188,293)), 90), (1182, 235)])
+
+
         if temp[len(temp) - 1] == '\n': temp = temp[:len(temp) - 1]
-        # return render listwhat 
+
+        # return render list
         return [render_list, temp]
 
 
