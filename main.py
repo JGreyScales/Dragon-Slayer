@@ -1,9 +1,9 @@
 #imports
 import pygame, pathlib, sys, fnmatch, os
 
-from pygame.constants import NOEVENT
 #local imports
 from scripts.render import level_load as ll
+from scripts.Player import player as PL
 
 #todo:
 # add placing
@@ -12,6 +12,9 @@ from scripts.render import level_load as ll
 pygame.init()
 
 # var define
+
+# list definement
+inv = []
 
 # tuple define
 size = width, height = 1478, 896
@@ -49,7 +52,8 @@ for level in range(-1, level_total - 1):
     temp_file = []
     # game loop
     while load_level_b:
-        render_list, temp_file = level_load.render_load(level, dir, start, temp_file)
+        render_list, temp_file, inv = level_load.render_load(level, dir, start, temp_file, PL, inv)
+        print(inv)
 
         if start: start = False
         t = pygame.time.get_ticks()
@@ -76,8 +80,7 @@ for level in range(-1, level_total - 1):
             time_pass = 0.0
             temp_file, column, direction, row, objects, win = level_load.cycle_tick(temp_file, direction, ['p'], run, win)
             if win == 2:
-                print('failure')
-                render_list, temp_file = level_load.render_load(level, dir, True, [])
+                render_list, temp_file, inv = level_load.render_load(level, dir, True, [], PL, inv)
                 win, run, direction = False, False, 1
 
                 

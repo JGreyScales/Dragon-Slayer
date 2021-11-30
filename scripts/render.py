@@ -13,14 +13,15 @@ class level_load:
             's' : str(dir + r'//Assets//Traps//spikes.png')
         }
 
-    def render_load(self, level, dir, start, temp) -> list:
+    def render_load(self, level, dir, start, temp, PL, inv) -> list:
 
         
         # define cleared renderlist
         render_list = []
 
         # reads from hexmap
-        if start: lines = open(dir + r'//Assets//levels//'+ str(level) + r'.dsm','r').readlines()
+        if start: 
+            lines = open(dir + r'//Assets//levels//'+ str(level) + r'.dsm','r').readlines()
         else: lines = temp
 
         # converts hexmap to images / image cords
@@ -48,24 +49,31 @@ class level_load:
         if level == -1:
             render_list.append([pygame.transform.scale(pygame.image.load(dir + r'//Assets//UI//Play button.png'), (200, 75)), (604, 410.5)])
             render_list.append([pygame.transform.scale(pygame.image.load(dir + r'//Assets//UI//Title.png'), (750, 100)), (329 , 174)])
+            useable = []
         else:
             render_list.append('run')
             
-            for item in [[70,896, 1408, 0], [68, 200, 1409, 28], [68, 200, 1409, 228]]: 
+            for item in [[70,896, 1408, 0], [68, 200, 1409, 28]]: 
                 render_list.append([pygame.transform.scale(pygame.image.load(dir + r'//Assets//UI//text.png'), (item[0],item[1])), (item[2], item[3])])
-
 
             # store useable traps in the level
             # y pos += 200, start at 28. for UI border
-            useable = ('s')
+            if start: useable = PL.gather_inventory(dir, level)
+            else: useable = inv 
             #render useable traps to UI elements
-            render_list.append([pygame.transform.rotate(pygame.transform.scale(pygame.image.load(self.paths['s']), (188,293)), 90), (1182, 235)])
+            
+            if len(useable) > 4: stop = 800
+            else: stop = len(useable) * 200
+
+            for trap in range(0, stop, 200):
+                render_list.append([pygame.transform.scale(pygame.image.load(dir + r'//Assets//UI//text.png'), (68,200)), (1409, 228 + trap)])
+                render_list.append([pygame.transform.rotate(pygame.transform.scale(pygame.image.load(self.paths['s']), (188,293)), 90), (1182, 235 + trap)])
 
 
         if temp[len(temp) - 1] == '\n': temp = temp[:len(temp) - 1]
 
         # return render list
-        return [render_list, temp]
+        return [render_list, temp, useable]
 
 
     # inner clock
