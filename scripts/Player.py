@@ -10,4 +10,5 @@ class player():
         return inventory
 
     def place_trap(event, level, useable):
-        print(event, level, useable)
+        cell_X, cell_Y = event.pos[0] // 128, event.pos[1] //128
+        if cell_X >= 11: return useable

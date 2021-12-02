@@ -32,7 +32,6 @@ time_pass = 0.0
 
 #function/class define
 screen = pygame.display.set_mode(size)
-clock = pygame.time.Clock()
 level_load = ll(dir)
 
 #fonts
@@ -69,12 +68,14 @@ for level in range(-1, level_total - 1):
 
                     try:
                         if not run:
-                            # check if player wants to run the game (I made the png incorrectly so using the collid points of the image WILL not work. may fix in future)
+                            # check if player wants to run the game (I made the png incorrectly so using the collid points of the image will NOT work (0,0),(100,100). may fix in future)
                             # do not have the time to mathimatically figure out the correct size needed to be scaleable
                             if event.pos[0] >= 1409 and event.pos[1] >= 33 and event.pos[0] <= 1475 and event.pos[1] <= 220: run = True
 
-                            PL.place_trap(event, level, inv)
-
+                            #place holder as to not crash during testing
+                            if PL.place_trap(event, level, inv) == None: None
+                            else: inv = PL.place_trap(event, level, inv)
+                            print(inv)
                     except(ValueError): None
 
 
