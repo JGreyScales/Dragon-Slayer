@@ -8,3 +8,6 @@ class player():
             for trap in line:
                 inventory.append(trap)
         return inventory
+
+    def place_trap(event, level, useable):
+        print(event, level, useable)

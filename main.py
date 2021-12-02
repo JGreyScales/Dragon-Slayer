@@ -43,8 +43,6 @@ for level in range(-1, level_total - 1):
 
     
     # clear render_list and load current level
-    
-
     # loop start definement
     load_level_b = True
     print('load level ' + str(level))
@@ -53,7 +51,6 @@ for level in range(-1, level_total - 1):
     # game loop
     while load_level_b:
         render_list, temp_file, inv = level_load.render_load(level, dir, start, temp_file, PL, inv)
-        print(inv)
 
         if start: start = False
         t = pygame.time.get_ticks()
@@ -69,9 +66,15 @@ for level in range(-1, level_total - 1):
                     #checks if player hits play button
                     if event.pos[0] >= 614 and event.pos[0] <= 790 and event.pos[1] >= 419 and event.pos[1] <= 473: load_level_b = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
+
                     try:
                         if not run:
+                            # check if player wants to run the game (I made the png incorrectly so using the collid points of the image WILL not work. may fix in future)
+                            # do not have the time to mathimatically figure out the correct size needed to be scaleable
                             if event.pos[0] >= 1409 and event.pos[1] >= 33 and event.pos[0] <= 1475 and event.pos[1] <= 220: run = True
+
+                            PL.place_trap(event, level, inv)
+
                     except(ValueError): None
 
 
