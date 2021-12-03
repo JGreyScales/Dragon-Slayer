@@ -73,7 +73,7 @@ for level in range(-1, level_total - 1):
                             if event.pos[0] >= 1409 and event.pos[1] >= 33 and event.pos[0] <= 1475 and event.pos[1] <= 220: run = True
 
                             #place holder as to not crash during testing
-                            if PL.place_trap(event, level, inv) == None: None
+                            if PL.place_trap(event, temp_file, inv) == None: None
                             else: inv = PL.place_trap(event, level, inv)
                             print(inv)
                     except(ValueError): None
@@ -83,14 +83,17 @@ for level in range(-1, level_total - 1):
         if time_pass >= .5 and level != -1:
             time_pass = 0.0
             temp_file, column, direction, row, objects, win = level_load.cycle_tick(temp_file, direction, ['p'], run, win)
+
+            # if the 'player' reaches the end you loose and the level resets
             if win == 2:
                 render_list, temp_file, inv = level_load.render_load(level, dir, True, [], PL, inv)
                 win, run, direction = False, False, 1
 
-                
+            # catch placeholders
             try: render_list[render_list.index(None)] = render_list[render_list.index(None) + 1][0].get_rect()
             except(ValueError): None
 
+            # get render locations and render to
             render_list[render_list.index('p')+ 1][0], render_list[render_list.index('p')+ 1][1] = column * 128 , row * 128
             screen.blit(render_list[render_list.index('p') + 2][0], render_list[render_list.index('p') + 1])
 

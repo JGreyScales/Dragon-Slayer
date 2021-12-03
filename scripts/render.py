@@ -1,7 +1,5 @@
 import pygame
 
-# to do, add rotation to player
-# to do, add movement
 class level_load:
     def __init__(self, dir) -> None:
         self.moveable = ['-', 'f']
@@ -22,6 +20,8 @@ class level_load:
         # reads from hexmap
         if start: 
             lines = open(dir + r'//Assets//levels//'+ str(level) + r'.dsm','r').readlines()
+
+        # if level is already started 'read' from old snapshot
         else: lines = temp
 
         # converts hexmap to images / image cords
@@ -51,17 +51,18 @@ class level_load:
             render_list.append([pygame.transform.scale(pygame.image.load(dir + r'//Assets//UI//Title.png'), (750, 100)), (329 , 174)])
             useable = []
         else:
+            #add placeholder
             render_list.append('run')
             
+            # render text boxes around items
             for item in [[70,896, 1408, 0], [68, 200, 1409, 28]]: 
                 render_list.append([pygame.transform.scale(pygame.image.load(dir + r'//Assets//UI//text.png'), (item[0],item[1])), (item[2], item[3])])
 
             # store useable traps in the level
-            # y pos += 200, start at 28. for UI border
             if start: useable = PL.gather_inventory(dir, level)
             else: useable = inv 
+
             #render useable traps to UI elements
-            
             if len(useable) > 4: stop = 800
             else: stop = len(useable) * 200
 
@@ -79,6 +80,8 @@ class level_load:
     # inner clock
     def cycle_tick(self, map, direction, objects, run, win) -> list:
         # 1 right, -1 left,      -1.0 down, 1.0 up
+
+        # get player position in reference to temp hexmap
         for item in objects:
             for line in range(len(map)):
                 try: 
@@ -87,10 +90,15 @@ class level_load:
                 except(ValueError): None
             else: print('PLAYER NOT FOUND, PLEASE FIX LEVEL (USE \'p\' IN LEVEL TO FIX). IF YOU HAVE NOT CREATED OR EDITED THE FILE. PLEASE REDOWNLOAD OR SELF REPAIR')
 
+            # if player win, tell main.py to restart the level
             if win: return [map, column, direction, row, objects, 2]
 
             elif run:
+
+                # player is moving horizontal
                 if type(direction) == int:
+
+                    # if player cannot move that way, rotate the player
                     if map[row][column + direction] not in self.moveable:
                         return level_load.cycle_tick(self, map, float(direction - (2 * direction)), objects, run, win)
                     else:   
@@ -111,12 +119,16 @@ class level_load:
                             else: map[row] += i
                         #reverses render order if the player is moving left
                         if direction < 0: map[row] = map[row][::-1]
-                        
+                
+                # player is moving vertical
                 elif type(direction) == float:
+                    # convert movement direction to something easier to use
                     direction = int(direction - (direction * 2))
+
                     if map[row + direction][column] not in self.moveable: 
                         return level_load.cycle_tick(self, map, int(direction - (direction * 2)), objects, run, win)
                     else:
+                        # if player is on finish
                         if map[row + direction][column] == 'f':
                             win = True
 
@@ -127,6 +139,8 @@ class level_load:
                             start = line
                             end = line + (direction * 2)
                         temp = map[:start]
+
+                        # remake the hexmap with moved pieces 
                         for line in map[start:end]:
                             updated_line = ''
                             for object in range(len(line)):
