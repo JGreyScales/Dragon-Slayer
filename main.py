@@ -73,9 +73,9 @@ for level in range(-1, level_total - 1):
                             if event.pos[0] >= 1409 and event.pos[1] >= 33 and event.pos[0] <= 1475 and event.pos[1] <= 220: run = True
 
                             #place holder as to not crash during testing
-                            if PL.place_trap(event, temp_file, inv) == None: None
-                            else: inv = PL.place_trap(event, level, inv)
-                            print(inv)
+                            else:
+                                try: inv, render_list = PL.place_trap(event, temp_file, inv, dir, render_list)
+                                except(TypeError): None
                     except(ValueError): None
 
 
