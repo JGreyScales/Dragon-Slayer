@@ -14,7 +14,7 @@ pygame.init()
 # var define
 
 # list definement
-inv = []
+inv, render_traps = [], []
 
 # tuple define
 size = width, height = 1478, 896
@@ -27,8 +27,7 @@ dir = str(pathlib.Path(__file__).parent.resolve())
 level_total = len(fnmatch.filter(os.listdir(dir + r'//Assets//levels'), '*dsm'))
 direction = 1
 
-getTicksLastFrame = 0
-time_pass = 0.0
+getTicksLastFrame, time_pass = 0, 0
 
 #function/class define
 screen = pygame.display.set_mode(size)
@@ -74,7 +73,7 @@ for level in range(-1, level_total - 1):
 
                             #place holder as to not crash during testing
                             else:
-                                try: inv, render_list = PL.place_trap(event, temp_file, inv, dir, render_list)
+                                try: inv, render_traps = PL.place_trap(event, temp_file, inv, dir, render_traps)
                                 except(TypeError): None
                     except(ValueError): None
 

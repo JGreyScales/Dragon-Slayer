@@ -10,7 +10,7 @@ class player():
                 inventory.append(trap)
         return inventory
 
-    def place_trap(event, level_loaded, useable, dir, render_list, placeable = False):
+    def place_trap(event, level_loaded, useable, dir:str, render_traps:list, placeable = False):
 
         # to do, find proper rotation of object, append object with proper rotation to render_list. Bing Bang Bong shit done
 
@@ -27,13 +27,23 @@ class player():
         if level_loaded[cell_Y][cell_X] != 'x':
             for i in (1,-1):
                 try:
-                    if level_loaded[cell_Y][cell_X + i] == 'x': placeable = True
+                   if level_loaded[cell_Y + i][cell_X] == 'x':
+                         if i == 1: placeable = 0
+                         else: placeable = 180
+                         break
                 except(IndexError): None
                 try:
-                    if level_loaded[cell_Y + i][cell_X] == 'x': placeable = True
+                    if level_loaded[cell_Y][cell_X + i] == 'x':
+                         if i == 1: placeable = 90
+                         else: placeable = 270
+                         break
                 except(IndexError): None
-        # render_list.append([pygame.transform.rotate(pygame.transform.scale(pygame.image.load(self.paths['s']), (188,293)), 90), (1182, 235 + trap)])
-            if placeable:
-                render_list.append([pygame.transform.scale(pygame.image.load(traps[useable[0]]), (128, 128)), (cell_Y * 128, cell_X * 128)])
-        return [useable[1:], render_list]
+
+            if placeable != type(bool):
+                print(placeable)
+                render_traps.append([pygame.transform.rotate(pygame.transform.scale(pygame.image.load(traps[useable[0]]), (128, 128)), placeable), (cell_Y * 128, cell_X * 128)])
+
+                
+
+        return [useable[1:], render_traps]
             
