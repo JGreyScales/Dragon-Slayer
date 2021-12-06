@@ -67,6 +67,7 @@ for level in range(-1, level_total - 1):
 
                     try:
                         if not run:
+                            print(event.pos)
                             # check if player wants to run the game (I made the png incorrectly so using the collid points of the image will NOT work (0,0),(100,100). may fix in future)
                             # do not have the time to mathimatically figure out the correct size needed to be scaleable
                             if event.pos[0] >= 1409 and event.pos[1] >= 33 and event.pos[0] <= 1475 and event.pos[1] <= 220: run = True
@@ -98,6 +99,7 @@ for level in range(-1, level_total - 1):
 
         # render options
         else:            
+            for trap in render_traps: render_list.append(trap)
             next = 0
             # render to screen
             for object in render_list: 
