@@ -4,10 +4,12 @@ class player():
     def __init__(self) -> None:
         pass
 
-    def gather_inventory(dir, level, inventory = []):
+    def gather_inventory(dir, level):
+        inventory = []
         for line in open(dir + r'//Assets//levels//'+ str(level) + r'.inv','r').readlines():
             for trap in line:
                 inventory.append(trap)
+        print(inventory, 2)
         return inventory
 
     def place_trap(event, level_loaded, useable, dir:str, render_traps:list, placeable = True):

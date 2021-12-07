@@ -14,7 +14,7 @@ pygame.init()
 # var define
 
 # list definement
-inv, render_traps = [], []
+inv = []
 
 # tuple define
 size = width, height = 1478, 896
@@ -45,7 +45,7 @@ for level in range(-1, level_total - 1):
     load_level_b = True
     print('load level ' + str(level))
     start, run, win = True, False, False
-    temp_file = []
+    temp_file, render_traps = [], []
     # game loop
     while load_level_b:
         render_list, temp_file, inv = level_load.render_load(level, dir, start, temp_file, PL, inv)
@@ -67,7 +67,6 @@ for level in range(-1, level_total - 1):
 
                     try:
                         if not run:
-                            print(event.pos)
                             # check if player wants to run the game (I made the png incorrectly so using the collid points of the image will NOT work (0,0),(100,100). may fix in future)
                             # do not have the time to mathimatically figure out the correct size needed to be scaleable
                             if event.pos[0] >= 1409 and event.pos[1] >= 33 and event.pos[0] <= 1475 and event.pos[1] <= 220: run = True
@@ -82,12 +81,13 @@ for level in range(-1, level_total - 1):
         # creates inner gameclock   
         if time_pass >= .5 and level != -1:
             time_pass = 0.0
-            temp_file, column, direction, row, objects, win = level_load.cycle_tick(temp_file, direction, ['p'], run, win)
+            temp_file, column, direction, row, objects, win = level_load.cycle_tick(temp_file, direction, ['p'], run, win, render_traps)
 
             # if the 'player' reaches the end you loose and the level resets
             if win == 2:
                 render_list, temp_file, inv = level_load.render_load(level, dir, True, [], PL, inv)
                 win, run, direction = False, False, 1
+            elif win == 3: load_level_b = False
 
             # catch placeholders
             try: render_list[render_list.index(None)] = render_list[render_list.index(None) + 1][0].get_rect()

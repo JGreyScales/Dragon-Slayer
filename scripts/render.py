@@ -2,6 +2,7 @@ import pygame
 
 class level_load:
     def __init__(self, dir) -> None:
+        self.traps = ['s']
         self.moveable = ['-', 'f']
         self.paths = {
             'f' : str(dir + r'//Assets//Props//backgrounds//clear_background.png'),
@@ -78,7 +79,7 @@ class level_load:
 
 
     # inner clock
-    def cycle_tick(self, map, direction, objects, run, win) -> list:
+    def cycle_tick(self, map, direction, objects, run, win, render_traps) -> list:
         # 1 right, -1 left,      -1.0 down, 1.0 up
 
         # get player position in reference to temp hexmap
@@ -90,6 +91,10 @@ class level_load:
                 except(ValueError): None
             else: print('PLAYER NOT FOUND, PLEASE FIX LEVEL (USE \'p\' IN LEVEL TO FIX). IF YOU HAVE NOT CREATED OR EDITED THE FILE. PLEASE REDOWNLOAD OR SELF REPAIR')
 
+            for trap in render_traps: 
+                cell_x, cell_y = trap[1][0] // 128, trap[1][1] // 128
+                if column == cell_x and row == cell_y:
+                    return [map, column, direction, row, objects, 3]
             # if player win, tell main.py to restart the level
             if win: return [map, column, direction, row, objects, 2]
 
@@ -100,7 +105,7 @@ class level_load:
 
                     # if player cannot move that way, rotate the player
                     if map[row][column + direction] not in self.moveable:
-                        return level_load.cycle_tick(self, map, float(direction - (2 * direction)), objects, run, win)
+                        return level_load.cycle_tick(self, map, float(direction - (2 * direction)), objects, run, win, render_traps)
                     else:   
                         if map[row][column + direction] == 'f':
                             win = True
@@ -126,7 +131,7 @@ class level_load:
                     direction = int(direction - (direction * 2))
 
                     if map[row + direction][column] not in self.moveable: 
-                        return level_load.cycle_tick(self, map, int(direction - (direction * 2)), objects, run, win)
+                        return level_load.cycle_tick(self, map, int(direction - (direction * 2)), objects, run, win, render_traps)
                     else:
                         # if player is on finish
                         if map[row + direction][column] == 'f':
